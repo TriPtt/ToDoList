@@ -4,10 +4,13 @@ import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
+import { TasksController } from './tasks/tasks.controller';
+import { TasksService } from './tasks/tasks.service';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-  imports: [UsersModule],
-  controllers: [AppController, UsersController],
-  providers: [AppService, UsersService],
+  imports: [UsersModule, TasksModule],
+  controllers: [AppController, UsersController, TasksController],
+  providers: [AppService, UsersService, TasksService],
 })
 export class AppModule {}
