@@ -7,9 +7,10 @@ import { UsersModule } from './users/users.module';
 import { TasksController } from './tasks/tasks.controller';
 import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule, TasksModule],
+  imports: [ConfigModule.forRoot(), UsersModule, TasksModule],
   controllers: [AppController, UsersController, TasksController],
   providers: [AppService, UsersService, TasksService],
 })
