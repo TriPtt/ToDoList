@@ -1,3 +1,4 @@
+import { Tasks } from './tasks/tasks.entity';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,6 +10,7 @@ import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         username: configService.get('DATABASE_USER'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
-        entities: [],
+        entities: [Tasks],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -35,4 +37,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [AppController, UsersController, TasksController],
   providers: [AppService, UsersService, TasksService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
