@@ -10,21 +10,23 @@ import { TasksModule } from './tasks/tasks.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Users } from './users/users.entity';
+
 @Module({
   imports: [
-    // Charger ConfigModule en premier
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DATABASE_HOST'),
         port: +configService.get('DATABASE_PORT') || 5432,
         username: configService.get('DATABASE_USER'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
-        entities: [],
+        entities: [Users],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -32,7 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UsersModule,
     TasksModule,
   ],
-  controllers: [AppController, UsersController, TasksController],
-  providers: [AppService, UsersService, TasksService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
