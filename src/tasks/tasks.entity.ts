@@ -16,5 +16,4 @@ export class Tasks {
 
   @Column()
   date: Date;
-
 }
