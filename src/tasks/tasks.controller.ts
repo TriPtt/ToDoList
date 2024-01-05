@@ -10,10 +10,13 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
 import { Tasks } from './tasks.entity';
+import { ApiBody } from '@nestjs/swagger';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -45,7 +48,7 @@ export class TasksController {
     }
   }
 
-  @Delete('/delete/id')
+  @Delete(':id/delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
     try {
@@ -59,5 +62,15 @@ export class TasksController {
         );
       }
     }
+  }
+
+  @Patch(':id/update')
+  @ApiBody({ type: UpdateTaskDto })
+  async updateTask(
+    @Param('id') id: number,
+    @Body() updateTaskDto: UpdateTaskDto
+  ): Promise<Tasks> {
+    const { title, description, status } = updateTaskDto;
+    return this.tasksService.updateTask(id, title, description, status);
   }
 }
