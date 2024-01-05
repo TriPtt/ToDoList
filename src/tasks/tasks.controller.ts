@@ -8,6 +8,8 @@ import {
   Post,
   Body,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
@@ -31,7 +33,7 @@ export class TasksController {
     return this.tasksService.findAll();
   }
 
-  @Post()
+  @Post('create')
   async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
       return await this.tasksService.add(taskDto);
@@ -43,10 +45,11 @@ export class TasksController {
     }
   }
 
-  @Delete()
-  async remove(@Body() taskDto: TasksDto): Promise<void> {
+  @Delete('/delete/id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: number): Promise<void> {
     try {
-      await this.tasksService.remove(taskDto);
+      await this.tasksService.remove(id);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;

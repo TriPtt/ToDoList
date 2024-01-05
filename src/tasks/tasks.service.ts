@@ -19,9 +19,7 @@ export class TasksService {
     return await this.tasksRepository.findOne({ where: { idUser } });
   }
 
-  async remove(taskDto: TasksDto): Promise<void> {
-    const { id } = taskDto;
-
+  async remove(id: number): Promise<void> {
     const task = await this.tasksRepository.findOne({ where: { id } });
 
     if (!task) {
