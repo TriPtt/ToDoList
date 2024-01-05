@@ -9,10 +9,13 @@ import {
   Param,
   HttpStatus,
   HttpCode,
+  Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersDto } from './dto/users.dto';
 import { Users } from './users.entity';
+import { UpdateUserDto } from './dto/update.users.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -32,7 +35,7 @@ export class UsersController {
     return this.usersService.newUser(usersDto);
   }
 
-  @Delete('/delete/:email')
+  @Delete(':email/delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Param('email') email: string): Promise<void> {
     const user = await this.usersService.findUserByEmail(email);
@@ -40,5 +43,14 @@ export class UsersController {
       throw new NotFoundException(`User with email ${email} not found`);
     }
     await this.usersService.deleteUser(email);
+  }
+
+  @Patch(':email/update')
+  @ApiBody({ type: UpdateUserDto })
+  async updateUser(
+    @Param('email') email: string,
+    @Body() updateUserDto: UpdateUserDto
+  ): Promise<Users> {
+    return this.usersService.updateUser(email, updateUserDto);
   }
 }
