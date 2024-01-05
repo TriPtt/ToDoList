@@ -19,7 +19,12 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { email } });
   }
 
-  async deleteUser(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  async deleteUser(email: string): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (user) {
+      await this.usersRepository.remove(user);
+    } else {
+      throw new Error(`User with email ${email} not found`);
+    }
   }
 }
