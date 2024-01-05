@@ -12,5 +12,5 @@ export class UsersDto {
 
   @ApiProperty()
   @IsString()
-  readonly password: string;
+  password: string;
 }
