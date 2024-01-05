@@ -27,4 +27,19 @@ export class UsersService {
       throw new Error(`User with email ${email} not found`);
     }
   }
+
+  async updateUser(
+    email: string,
+    updateUserDto: Partial<UsersDto>
+  ): Promise<Users> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new Error(`User with email ${email} not found`);
+    }
+
+    // Mettre à jour les propriétés de l'utilisateur
+    Object.assign(user, updateUserDto);
+
+    return this.usersRepository.save(user);
+  }
 }
