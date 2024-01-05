@@ -16,4 +16,10 @@ export class Tasks {
 
   @Column()
   date: string;
+<<<<<<< HEAD
+=======
+
+  @Column()
+  idUser: number;
+>>>>>>> 79e216c83d8356b6f79c81536e8c780e172311ff
 }
