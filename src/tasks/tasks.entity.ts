@@ -16,4 +16,7 @@ export class Tasks {
 
   @Column()
   date: string;
+
+  @Column()
+  idUser: number;
 }
