@@ -8,6 +8,7 @@ async function bootstrap() {
     .setTitle('ToDoList API')
     .setDescription('API for ToDoList')
     .setVersion('0.0')
+    .addBearerAuth() // Ajoutez cette ligne pour activer l'authentification Bearer
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, document, {
