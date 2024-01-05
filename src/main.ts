@@ -10,7 +10,9 @@ async function bootstrap() {
     .setVersion('0.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/', app, document);
+  SwaggerModule.setup('/', app, document, {
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
+  });
   await app.listen(3000);
   console.log(process.env.API_PORT);
   console.log(process.env.DATABASE_USER);
