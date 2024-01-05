@@ -11,7 +11,9 @@ async function bootstrap() {
     .addBearerAuth() // Ajoutez cette ligne pour activer l'authentification Bearer
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/', app, document);
+  SwaggerModule.setup('/', app, document, {
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
+  });
   await app.listen(3000);
   console.log(process.env.API_PORT);
   console.log(process.env.DATABASE_USER);
