@@ -22,13 +22,13 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @Get()
-  async findTasksByUserId(@Query('idUser') idUser: number): Promise<Tasks> {
-    const user = await this.tasksService.findTaskByIdUser(idUser);
-    if (!user) {
-      throw new NotFoundException(`User with idUser ${idUser} not found`);
+  @Get(':id')
+  async findOneTaskById(@Param('id') id: number): Promise<Tasks> {
+    const task = await this.tasksService.findOneTaskById(id);
+    if (!task) {
+      throw new NotFoundException(`Task with id ${id} not found`);
     }
-    return user;
+    return task;
   }
 
   @Get()

@@ -15,8 +15,8 @@ export class TasksService {
     return this.tasksRepository.find();
   }
 
-  async findTaskByIdUser(idUser: number): Promise<Tasks | null> {
-    return await this.tasksRepository.findOne({ where: { idUser } });
+  async findOneTaskById(id: number): Promise<Tasks | null> {
+    return await this.tasksRepository.findOne({ where: { id } });
   }
 
   async remove(id: number): Promise<void> {
