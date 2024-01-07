@@ -21,7 +21,7 @@ import { ApiBody } from '@nestjs/swagger';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Get()
+  @Get(':email')
   async findUserByEmail(@Query('email') email: string): Promise<Users> {
     const user = await this.usersService.findUserByEmail(email);
     if (!user) {

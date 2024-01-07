@@ -36,7 +36,7 @@ export class TasksController {
     return this.tasksService.findAll();
   }
 
-  @Post('create')
+  @Post()
   async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
       return await this.tasksService.add(taskDto);
@@ -48,7 +48,7 @@ export class TasksController {
     }
   }
 
-  @Delete(':id/delete')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
     try {
@@ -64,7 +64,7 @@ export class TasksController {
     }
   }
 
-  @Patch(':id/update')
+  @Patch(':id')
   @ApiBody({ type: UpdateTaskDto })
   async updateTask(
     @Param('id') id: number,

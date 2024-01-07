@@ -14,6 +14,8 @@ import { DataSource } from 'typeorm';
 
 import { Users } from './users/users.entity';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 import { ThrottlerModule } from '@nestjs/throttler';
 
@@ -29,6 +31,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -49,7 +52,13 @@ import { ThrottlerModule } from '@nestjs/throttler';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
