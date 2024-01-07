@@ -15,8 +15,18 @@ import { DataSource } from 'typeorm';
 import { Users } from './users/users.entity';
 import { AuthModule } from './auth/auth.module';
 
+import { ThrottlerModule } from '@nestjs/throttler';
+
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60,
+          limit: 30,
+        },
+      ],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

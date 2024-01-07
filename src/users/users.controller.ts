@@ -30,12 +30,12 @@ export class UsersController {
     return user;
   }
 
-  @Post('/new')
+  @Post('')
   async newUser(@Body() usersDto: UsersDto): Promise<Users> {
     return this.usersService.newUser(usersDto);
   }
 
-  @Delete(':email/delete')
+  @Delete(':email')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Param('email') email: string): Promise<void> {
     const user = await this.usersService.findUserByEmail(email);
@@ -45,7 +45,7 @@ export class UsersController {
     await this.usersService.deleteUser(email);
   }
 
-  @Patch(':email/update')
+  @Patch(':email')
   @ApiBody({ type: UpdateUserDto })
   async updateUser(
     @Param('email') email: string,
