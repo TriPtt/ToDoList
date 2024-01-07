@@ -14,18 +14,19 @@ import { DataSource } from 'typeorm';
 
 import { Users } from './users/users.entity';
 import { AuthModule } from './auth/auth.module';
+
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+
 import { AuthGuard } from './auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-
-import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
     ThrottlerModule.forRoot({
       throttlers: [
         {
-          ttl: 60,
-          limit: 30,
+          ttl: 60000, // en millisecondes !!!!
+          limit: 20,
         },
       ],
     }),
@@ -54,6 +55,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
   controllers: [AppController],
   providers: [
     AppService,
+
+    // mettre en commentaire pour le dev 👇👇👇
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
