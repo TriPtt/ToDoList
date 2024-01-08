@@ -15,6 +15,7 @@ import { AuthGuard } from './auth.guard';
 import { Public } from 'src/app.decorator';
 import { log } from 'console';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -31,15 +32,15 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth() // Ajoutez cette ligne
-  @Get('profile')
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'No user found for those credentials',
-  })
-  getProfile(@Request() req) {
-    return req.user;
-  }
+  // @UseGuards(AuthGuard)
+  // @ApiBearerAuth() // Ajoutez cette ligne
+  // @Get('profile')
+  // @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
+  // @ApiResponse({
+  //   status: HttpStatus.NOT_FOUND,
+  //   description: 'No user found for those credentials',
+  // })
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
 }

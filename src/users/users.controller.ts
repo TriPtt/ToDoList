@@ -15,8 +15,9 @@ import { UsersService } from './users.service';
 import { UsersDto } from './dto/users.dto';
 import { Users } from './users.entity';
 import { UpdateUserDto } from './dto/update.users.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
