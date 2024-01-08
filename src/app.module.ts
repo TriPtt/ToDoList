@@ -1,5 +1,5 @@
 import { Tasks } from './tasks/tasks.entity';
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
@@ -19,6 +19,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthGuard } from './auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+
+import { MetricsMiddleware } from './middlewares/metrics.middleware';
+import { MetricsService } from './middlewares/metrics.service';
 
 @Module({
   imports: [
@@ -55,7 +58,7 @@ import { APP_GUARD } from '@nestjs/core';
   controllers: [AppController],
   providers: [
     AppService,
-
+    MetricsService,
     // mettre en commentaire pour le dev 👇👇👇
     {
       provide: APP_GUARD,
@@ -69,4 +72,7 @@ import { APP_GUARD } from '@nestjs/core';
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MetricsMiddleware).forRoutes('*');
+  }
 }
