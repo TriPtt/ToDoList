@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Users } from 'src/users/users.entity';
 
 @Entity()
 export class Tasks {
@@ -17,6 +24,8 @@ export class Tasks {
   @Column()
   date: string;
 
-  @Column()
-  idUser: number;
+  // liaison entre users et tasks
+  @ManyToOne(() => Users, (user) => user.tasks)
+  @JoinColumn({ name: 'userId' })
+  user: Users;
 }

@@ -1,3 +1,4 @@
+import { Tasks } from 'src/tasks/tasks.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
@@ -13,4 +14,8 @@ export class Users {
 
   @Column()
   password: string;
+
+  // liaison entre users et tasks
+  @OneToMany(() => Tasks, (task) => task.user)
+  tasks: Tasks[];
 }
