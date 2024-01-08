@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Tasks } from 'src/tasks/tasks.entity'; // Importer l'entité des tâches
 
 @Entity()
 export class Users {
@@ -8,9 +9,9 @@ export class Users {
   @Column()
   email: string;
 
-  //   @Column({ default: true })
-  //   isActive: boolean;
-
   @Column()
   password: string;
+
+  @OneToMany(() => Tasks, (task) => task.user)
+  tasks: Tasks[];
 }

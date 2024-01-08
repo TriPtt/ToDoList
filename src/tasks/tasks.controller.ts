@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  Req,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
@@ -38,9 +39,12 @@ export class TasksController {
   }
 
   @Post()
-  async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
+  async create(@Body() taskDto: TasksDto, @Req() req): Promise<Tasks> {
     try {
-      return await this.tasksService.add(taskDto);
+      // Obtenez l'ID de l'utilisateur à partir de la session ou du token JWT
+      const user = req.user;
+
+      return await this.tasksService.add(taskDto, user);
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(

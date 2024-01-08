@@ -27,6 +27,16 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { email } });
   }
 
+  async findUserAndTasksByEmail(
+    email: string,
+    relations: string[]
+  ): Promise<Users | undefined> {
+    return await this.usersRepository.findOne({
+      where: { email },
+      relations: relations,
+    });
+  }
+
   async deleteUser(email: string): Promise<void> {
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user) {

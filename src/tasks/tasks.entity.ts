@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Users } from 'src/users/users.entity'; // Importer l'entité des utilisateurs
 
 @Entity()
 export class Tasks {
@@ -17,6 +18,6 @@ export class Tasks {
   @Column()
   date: string;
 
-  @Column()
-  idUser: number;
+  @ManyToOne(() => Users, (user) => user.tasks)
+  user: Users;
 }
