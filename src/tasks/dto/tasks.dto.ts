@@ -24,5 +24,5 @@ export class TasksDto {
 
   @ApiProperty()
   @IsInt()
-  idUser: number;
+  userId: number;
 }
