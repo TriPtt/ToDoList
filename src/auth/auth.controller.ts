@@ -12,12 +12,14 @@ import {
 import { ApiBearerAuth, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
+import { Public } from 'src/app.decorator';
 import { log } from 'console';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiBody({ type: Object }) // Spécifie le type du corps de la requête dans Swagger
   @ApiResponse({ status: HttpStatus.OK, description: 'Successful login' })
