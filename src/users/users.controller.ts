@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpCode,
   Patch,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersDto } from './dto/users.dto';
@@ -25,13 +26,20 @@ export class UsersController {
   async findUserByEmail(@Query('email') email: string): Promise<Users> {
     const user = await this.usersService.findUserByEmail(email);
     if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
+      throw new NotFoundException(
+        `L'utilisateur avec l'email ${email} n'a pas été trouvé`
+      );
     }
     return user;
   }
 
   @Post('/new')
   async newUser(@Body() usersDto: UsersDto): Promise<Users> {
+    if (!usersDto.email || !usersDto.password) {
+      throw new BadRequestException(
+        "Le mot de passe et/ou l'email sont/est manquant"
+      );
+    }
     return this.usersService.newUser(usersDto);
   }
 
@@ -40,7 +48,9 @@ export class UsersController {
   async deleteUser(@Param('email') email: string): Promise<void> {
     const user = await this.usersService.findUserByEmail(email);
     if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
+      throw new NotFoundException(
+        `L'utilisateur avec l'email ${email} n'a pas été trouvé`
+      );
     }
     await this.usersService.deleteUser(email);
   }
@@ -51,6 +61,12 @@ export class UsersController {
     @Param('email') email: string,
     @Body() updateUserDto: UpdateUserDto
   ): Promise<Users> {
+    const user = await this.usersService.findUserByEmail(email);
+    if (!user) {
+      throw new NotFoundException(
+        `L'utilisateur avec l'email ${email} n'a pas été trouvé`
+      );
+    }
     return this.usersService.updateUser(email, updateUserDto);
   }
 }

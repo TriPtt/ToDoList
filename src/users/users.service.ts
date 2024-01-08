@@ -20,7 +20,7 @@ export class UsersService {
 
     // Remplacez le mot de passe par le mot de passe haché
     user.password = hashedPassword;
-    return await this.usersRepository.save(user);
+    if (user.password == null) return await this.usersRepository.save(user);
   }
 
   async findUserByEmail(email: string): Promise<Users | undefined> {
@@ -32,7 +32,7 @@ export class UsersService {
     if (user) {
       await this.usersRepository.remove(user);
     } else {
-      throw new Error(`User with email ${email} not found`);
+      throw new Error(`L'utilisateur avec l'email ${email} n'a pas été trouvé`);
     }
   }
 
@@ -42,7 +42,7 @@ export class UsersService {
   ): Promise<Users> {
     const user = await this.usersRepository.findOne({ where: { email } });
     if (!user) {
-      throw new Error(`User with email ${email} not found`);
+      throw new Error(`L'utilisateur avec l'email ${email} n'a pas été trouvé`);
     }
 
     // Mettre à jour les propriétés de l'utilisateur

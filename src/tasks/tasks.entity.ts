@@ -18,5 +18,5 @@ export class Tasks {
   date: string;
 
   @Column()
-  idUser: number;
+  userId: number;
 }
