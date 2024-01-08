@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tasks } from './tasks.entity';
 import { TasksDto } from './dto/tasks.dto';
+import { Users } from 'src/users/users.entity'; // Assurez-vous d'importer l'entité User
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Tasks)
-    private tasksRepository: Repository<Tasks>
+    private tasksRepository: Repository<Tasks>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>
   ) {}
 
   findAll(): Promise<Tasks[]> {
@@ -31,7 +34,11 @@ export class TasksService {
     await this.tasksRepository.remove(task);
   }
 
-  async add(taskDto: TasksDto): Promise<TasksDto> {
+  async add(taskDto: TasksDto, userEmail: string): Promise<TasksDto> {
+    const user = await this.userRepository.findOne({
+      where: { email: userEmail },
+    });
+
     return await this.tasksRepository.save(taskDto);
   }
 

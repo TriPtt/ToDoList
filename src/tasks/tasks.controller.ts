@@ -40,7 +40,8 @@ export class TasksController {
   @Post()
   async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
-      return await this.tasksService.add(taskDto);
+      const userEmail = ''; // Replace with the actual user email
+      return await this.tasksService.add(taskDto, userEmail);
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(

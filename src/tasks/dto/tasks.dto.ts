@@ -23,6 +23,6 @@ export class TasksDto {
   date: string;
 
   @ApiProperty()
-  @IsInt()
-  idUser: number;
+  @IsString()
+  userId: string;
 }
