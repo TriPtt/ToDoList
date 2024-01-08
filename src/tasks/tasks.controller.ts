@@ -27,7 +27,9 @@ export class TasksController {
   async findOneTaskById(@Param('id') id: number): Promise<Tasks> {
     const task = await this.tasksService.findOneTaskById(id);
     if (!task) {
-      throw new NotFoundException(`Task with id ${id} not found`);
+      throw new NotFoundException(
+        `La tâche avec l'id ${id} n'a pas été trouvée`
+      );
     }
     return task;
   }
@@ -44,7 +46,7 @@ export class TasksController {
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(
-        'Une erreur interne est survenue.'
+        'Une erreur interne est survenue lors de la création.'
       );
     }
   }
@@ -59,7 +61,7 @@ export class TasksController {
         throw error;
       } else {
         throw new InternalServerErrorException(
-          'Une erreur interne est survenue.'
+          'Une erreur interne est survenue lors de la supression.'
         );
       }
     }

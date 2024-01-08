@@ -33,7 +33,7 @@ export class AuthController {
   }
 
   // @UseGuards(AuthGuard)
-  // @ApiBearerAuth() // Ajoutez cette ligne
+  // @ApiBearerAuth()
   // @Get('profile')
   // @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
   // @ApiResponse({
