@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  Request,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
@@ -40,8 +41,10 @@ export class TasksController {
   }
 
   @Post()
-  async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
+  async create(@Request() req, @Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
+      const userId = req.user.sub;
+      taskDto.userId = userId;
       return await this.tasksService.add(taskDto);
     } catch (error) {
       console.error(error);
