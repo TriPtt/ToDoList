@@ -20,7 +20,7 @@ export class UsersService {
 
     // Remplacez le mot de passe par le mot de passe haché
     user.password = hashedPassword;
-    if (user.password == null) return await this.usersRepository.save(user);
+    return this.usersRepository.save(user);
   }
 
   async findUserByEmail(email: string): Promise<Users | undefined> {

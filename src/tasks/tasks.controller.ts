@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
@@ -44,10 +45,17 @@ export class TasksController {
     return this.tasksService.findAll();
   }
 
+  @Get('users/:id')
+  async findByUserId(@Param('id') userId: number): Promise<Tasks[]> {
+    return this.tasksService.findByUserId(userId);
+  }
+
   @Post()
   @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
-  async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
+  async create(@Request() req, @Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
+      const userId = req.user.sub;
+      taskDto.userId = userId;
       return await this.tasksService.add(taskDto);
     } catch (error) {
       console.error(error);
