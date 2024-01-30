@@ -1,4 +1,4 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsDate, IsInt, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class TasksDto {
@@ -19,8 +19,8 @@ export class TasksDto {
   status: string;
 
   @ApiProperty()
-  @IsString()
-  date: string;
+  @IsDate()
+  date: Date;
 
   @ApiProperty()
   @IsInt()

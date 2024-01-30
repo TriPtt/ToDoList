@@ -36,6 +36,7 @@
     "@nestjs/typeorm": "^10.0.1",
     "bcrypt": "^5.1.1",
     "class-validator": "^0.14.0",
+    "cookie-parser": "^1.4.6",
     "express-prom-bundle": "^7.0.0",
     "mysql2": "^3.6.5",
     "nestjs-rate-limiter": "^3.1.0",

@@ -14,8 +14,8 @@ export class Tasks {
   @Column()
   status: string;
 
-  @Column()
-  date: string;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date: Date;
 
   @Column()
   userId: number;
