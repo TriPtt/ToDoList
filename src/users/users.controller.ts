@@ -34,7 +34,7 @@ export class UsersController {
     return user;
   }
 
-  @Post('')
+  @Post()
   async newUser(@Body() usersDto: UsersDto): Promise<Users> {
     if (!usersDto.email || !usersDto.password) {
       throw new BadRequestException(

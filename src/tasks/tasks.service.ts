@@ -15,6 +15,10 @@ export class TasksService {
     return this.tasksRepository.find();
   }
 
+  async findByUserId(userId: number): Promise<Tasks[]> {
+    return this.tasksRepository.find({ where: { userId } });
+  }
+
   async findOneTaskById(id: number): Promise<Tasks | null> {
     return await this.tasksRepository.findOne({ where: { id } });
   }

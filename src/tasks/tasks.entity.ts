@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Users } from 'src/users/users.entity';
 @Entity()
 export class Tasks {
   @PrimaryGeneratedColumn()
@@ -19,4 +19,7 @@ export class Tasks {
 
   @Column()
   userId: number;
+
+  @ManyToOne(() => Users, (user) => user.tasks)
+  user: Users;
 }
