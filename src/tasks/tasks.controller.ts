@@ -12,17 +12,22 @@ import {
   HttpStatus,
   Patch,
   Request,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
 import { Tasks } from './tasks.entity';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { Cache, CacheKey } from '@nestjs/cache-manager';
 
 @ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly cacheManager: Cache
+  ) {}
 
   @Get(':id')
   async findOneTaskById(@Param('id') id: number): Promise<Tasks> {
@@ -63,6 +68,7 @@ export class TasksController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
     try {
+      await this.cacheManager.del('custom_key');
       await this.tasksService.remove(id);
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -82,6 +88,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto
   ): Promise<Tasks> {
     const { title, description, status } = updateTaskDto;
+    await this.cacheManager.reset();
     return this.tasksService.updateTask(id, title, description, status);
   }
 }
