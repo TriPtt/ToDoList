@@ -13,10 +13,11 @@ import {
   Patch,
   Request,
 } from '@nestjs/common';
+
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
 import { Tasks } from './tasks.entity';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
 @ApiTags('tasks')
@@ -24,6 +25,9 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
+  @ApiOperation({ summary: 'Récupérer une tâche par son ID' })
+  @ApiResponse({ status: 200, description: 'Tâche récupérée avec succès' })
+  @ApiBody({ type: Number })
   @Get(':id')
   async findOneTaskById(@Param('id') id: number): Promise<Tasks> {
     const task = await this.tasksService.findOneTaskById(id);
@@ -35,11 +39,20 @@ export class TasksController {
     return task;
   }
 
+  @ApiOperation({ summary: 'Récupérer toutes les tâches' })
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des tâches récupérées avec succès',
+  })
+  @ApiBody({ type: TasksDto })
   @Get()
   findAll(): Promise<Tasks[]> {
     return this.tasksService.findAll();
   }
 
+  @ApiOperation({ summary: 'Ajouter une tâche' })
+  @ApiResponse({ status: 201, description: 'Tâche ajouté avec succès' })
+  @ApiBody({ type: TasksDto })
   @Post()
   async create(@Request() req, @Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
@@ -54,6 +67,9 @@ export class TasksController {
     }
   }
 
+  @ApiOperation({ summary: 'Supprimer une tâche' })
+  @ApiResponse({ status: 204, description: 'Tâche supprimée avec succès' })
+  @ApiBody({ type: Number })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
@@ -70,6 +86,7 @@ export class TasksController {
     }
   }
 
+  @ApiOperation({ summary: 'Modifier une tâche' })
   @Patch(':id')
   @ApiBody({ type: UpdateTaskDto })
   async updateTask(
