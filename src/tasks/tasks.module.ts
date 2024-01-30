@@ -6,15 +6,7 @@ import { Tasks } from './tasks.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Tasks]),
-    CacheModule.registerAsync({
-      useFactory: () => ({
-        store: 'memory', // Vous pouvez changer le type de stockage en fonction de vos besoins
-        ttl: 600, // Temps de vie du cache en secondes
-      }),
-    }),
-  ],
+  imports: [TypeOrmModule.forFeature([Tasks])],
   providers: [TasksService],
   controllers: [TasksController],
 })

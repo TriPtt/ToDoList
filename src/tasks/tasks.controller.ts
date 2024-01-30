@@ -19,16 +19,17 @@ import { TasksDto } from './dto/tasks.dto';
 import { Tasks } from './tasks.entity';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { Cache, CacheKey } from '@nestjs/cache-manager';
 
 @ApiTags('tasks')
-@UseInterceptors(CacheInterceptor)
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly cacheManager: Cache
+  ) {}
 
   @Get(':id')
-  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   async findOneTaskById(@Param('id') id: number): Promise<Tasks> {
     const task = await this.tasksService.findOneTaskById(id);
     if (!task) {
@@ -40,7 +41,6 @@ export class TasksController {
   }
 
   @Get()
-  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   findAll(): Promise<Tasks[]> {
     return this.tasksService.findAll();
   }
@@ -51,7 +51,6 @@ export class TasksController {
   }
 
   @Post()
-  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   async create(@Request() req, @Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
       const userId = req.user.sub;
@@ -66,10 +65,10 @@ export class TasksController {
   }
 
   @Delete(':id')
-  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
     try {
+      await this.cacheManager.del('custom_key');
       await this.tasksService.remove(id);
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -83,13 +82,13 @@ export class TasksController {
   }
 
   @Patch(':id')
-  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   @ApiBody({ type: UpdateTaskDto })
   async updateTask(
     @Param('id') id: number,
     @Body() updateTaskDto: UpdateTaskDto
   ): Promise<Tasks> {
     const { title, description, status } = updateTaskDto;
+    await this.cacheManager.reset();
     return this.tasksService.updateTask(id, title, description, status);
   }
 }

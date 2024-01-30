@@ -22,6 +22,8 @@ import { APP_GUARD } from '@nestjs/core';
 
 import { MetricsMiddleware } from './middlewares/metrics.middleware';
 import { MetricsService } from './middlewares/metrics.service';
+import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -38,7 +40,16 @@ import { MetricsService } from './middlewares/metrics.service';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule,
+        // CacheModule.register({
+        //   isGlobal: true,
+        //   useFactory: () => ({
+        //     store: 'memory', // Vous pouvez changer le type de stockage en fonction de vos besoins
+        //     ttl: 600, // Temps de vie du cache en secondes
+        //   }),
+        // }),
+      ],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DATABASE_HOST'),
@@ -52,6 +63,7 @@ import { MetricsService } from './middlewares/metrics.service';
       inject: [ConfigService],
     }),
     UsersModule,
+    CacheModule.register({ ttl: 10000, isGlobal: true }),
     TasksModule,
     AuthModule,
   ],
@@ -59,15 +71,20 @@ import { MetricsService } from './middlewares/metrics.service';
   providers: [
     AppService,
     MetricsService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+
     // mettre en commentaire pour le dev 👇👇👇
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
   ],
 })
 export class AppModule {
