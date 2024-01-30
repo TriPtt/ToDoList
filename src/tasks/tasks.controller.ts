@@ -11,19 +11,23 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksDto } from './dto/tasks.dto';
 import { Tasks } from './tasks.entity';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('tasks')
+@UseInterceptors(CacheInterceptor)
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get(':id')
+  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   async findOneTaskById(@Param('id') id: number): Promise<Tasks> {
     const task = await this.tasksService.findOneTaskById(id);
     if (!task) {
@@ -35,11 +39,13 @@ export class TasksController {
   }
 
   @Get()
+  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   findAll(): Promise<Tasks[]> {
     return this.tasksService.findAll();
   }
 
   @Post()
+  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   async create(@Body() taskDto: TasksDto): Promise<TasksDto> {
     try {
       return await this.tasksService.add(taskDto);
@@ -52,6 +58,7 @@ export class TasksController {
   }
 
   @Delete(':id')
+  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
     try {
@@ -68,6 +75,7 @@ export class TasksController {
   }
 
   @Patch(':id')
+  @CacheTTL(600) // Spécifiez le temps de vie du cache (en secondes)
   @ApiBody({ type: UpdateTaskDto })
   async updateTask(
     @Param('id') id: number,
