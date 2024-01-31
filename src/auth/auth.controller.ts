@@ -6,8 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,9 +16,7 @@ import {
   ApiProperty,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
 import { Public } from 'src/app.decorator';
-import { log } from 'console';
 
 class SignInDto {
   @ApiProperty({ type: String, description: 'Adresse email' })
@@ -52,9 +48,28 @@ export class AuthController {
       signInDto.password
     );
 
-    // Retournez l'access_token dans la réponse
+    const refreshToken = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password
+    );
+
+    // Retournez l'access_token dans la réponse + refresh_token
     console.log('accessToken', accessToken.access_token);
-    return { access_token: accessToken.access_token };
+    console.log('refreshToken', refreshToken.refresh_token);
+    return {
+      access_token: accessToken.access_token,
+      refresh_token: refreshToken.refresh_token,
+    };
+  }
+
+  @ApiBearerAuth()
+  @Public()
+  @ApiBody({ type: Object })
+  @Post('refresh')
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    console.log('Received body:', Body); // Log le corps entier de la requête
+    console.log('Received refreshToken:', refreshToken); // Debug
+    return this.authService.refreshToken(refreshToken);
   }
 
   // @UseGuards(AuthGuard)
