@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -78,6 +79,18 @@ export class AuthController {
     console.log('Received body:', Body); // Log le corps entier de la requête
     console.log('Received refreshToken:', refreshToken); // Debug
     return this.authService.refreshToken(refreshToken);
+  }
+
+  @ApiBearerAuth()
+  @Post('generate-api-key')
+  async generate(@Request() req) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      throw new BadRequestException('Token est requis');
+    }
+
+    return this.authService.generate(token);
   }
 
   // @UseGuards(AuthGuard)

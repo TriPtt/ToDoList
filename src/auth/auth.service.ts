@@ -8,6 +8,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { jwtConstants } from './constants';
+import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -34,12 +35,12 @@ export class AuthService {
 
     const access_token = this.jwtService.sign(payload, {
       secret: jwtConstants.secret,
-      expiresIn: '30s',
+      expiresIn: '15m',
     });
 
     const refresh_token = this.jwtService.sign(payload, {
       secret: jwtConstants.refreshSecret,
-      expiresIn: '60s',
+      expiresIn: '7d',
     });
 
     return { access_token, refresh_token };
@@ -74,7 +75,7 @@ export class AuthService {
 
       const access_token = this.jwtService.sign(payload, {
         secret: jwtConstants.secret,
-        expiresIn: '120s',
+        expiresIn: '15m',
       });
 
       return { access_token };
@@ -89,5 +90,44 @@ export class AuthService {
         );
       }
     }
+  }
+
+  // ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  // ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  // ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+  async generate(token: string): Promise<{ api_key: string }> {
+    if (token.startsWith('Bearer ')) {
+      token = token.slice(7, token.length);
+    }
+
+    let data;
+    try {
+      data = this.jwtService.verify(token, {
+        secret: jwtConstants.secret,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Token invalide');
+    }
+
+    const user = await this.usersService.findUserByEmail(data.username);
+    if (!user) {
+      throw new NotFoundException('Utilisateur pas trouvé');
+    }
+
+    const payload = {
+      sub: user.id,
+      username: user.email,
+    };
+
+    const api_key = this.jwtService.sign(payload, {
+      // Bon on créé un token jwt plutôt qu'une vrai clé API parce que pas le temps
+      secret: jwtConstants.secret,
+      expiresIn: '365d',
+    });
+
+    console.log('API_KEY générée:' + api_key);
+
+    return { api_key };
   }
 }
