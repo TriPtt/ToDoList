@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Public } from 'src/app.decorator';
+import { AuthDto } from './dto/auth.dto';
 
 class SignInDto {
   @ApiProperty({ type: String, description: 'Adresse email' })
@@ -62,9 +63,16 @@ export class AuthController {
     };
   }
 
-  @ApiBearerAuth()
   @Public()
-  @ApiBody({ type: Object })
+  @ApiOperation({
+    summary: 'Régénerer un jwt grace au refresh token',
+    requestBody: {
+      content: {
+        'application/json': {},
+      },
+    },
+  })
+  @ApiBody({ type: AuthDto })
   @Post('refresh')
   async refresh(@Body('refreshToken') refreshToken: string) {
     console.log('Received body:', Body); // Log le corps entier de la requête
