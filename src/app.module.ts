@@ -81,10 +81,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {
