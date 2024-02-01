@@ -3,13 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm'; // Import 'In' from TypeORM
 import { Tasks } from './tasks.entity';
 import { TasksDto } from './dto/tasks.dto';
-import { Users } from 'src/users/users.entity';
-
+import { Users } from '../users/users.entity';
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Tasks)
-    private tasksRepository: Repository<Tasks>
+    private tasksRepository: Repository<Tasks>,
+    @InjectRepository(Users) // Add this
+    private usersRepository: Repository<Users>
   ) {}
 
   findAll(): Promise<Tasks[]> {
@@ -17,7 +18,19 @@ export class TasksService {
   }
 
   async findByUserId(userId: number): Promise<Tasks[]> {
-    return this.tasksRepository.find({ where: { userId } });
+    return this.tasksRepository
+      .createQueryBuilder('tasks')
+      .leftJoinAndSelect('tasks.users', 'users')
+      .leftJoinAndSelect('tasks.users', 'all_users') // Add this line to include all user information
+      .where('all_users.id = :userId OR tasks.userId = :userId', { userId })
+      .getMany();
+  }
+
+  private async loadUsersDetails(userIds: number[]): Promise<Users[]> {
+    // Assuming Users is your entity representing user details
+    return this.usersRepository.find({
+      where: { id: In(userIds) },
+    });
   }
 
   async findOneTaskById(id: number): Promise<Tasks | null> {

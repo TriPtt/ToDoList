@@ -30,7 +30,7 @@ export class Tasks {
   @ManyToOne(() => Users, (user) => user.tasks)
   user: Users;
 
-  @ManyToMany(() => Users)
+  @ManyToMany((type) => Users, (user) => user.tasks)
   @JoinTable()
   users: Users[];
 }

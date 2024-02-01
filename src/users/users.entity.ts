@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
 import { Tasks } from 'src/tasks/tasks.entity';
 
 @Entity()
@@ -15,6 +21,6 @@ export class Users {
   @Column()
   password: string;
 
-  @OneToMany(() => Tasks, (task) => task.user)
+  @ManyToMany((type) => Tasks, (task) => task.users)
   tasks: Tasks[];
 }
