@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm'; // Import 'In' from TypeORM
 import { Tasks } from './tasks.entity';
 import { TasksDto } from './dto/tasks.dto';
+import { Users } from 'src/users/users.entity';
 
 @Injectable()
 export class TasksService {
@@ -22,6 +23,7 @@ export class TasksService {
   async findOneTaskById(id: number): Promise<Tasks | null> {
     return await this.tasksRepository.findOne({ where: { id } });
   }
+
   async remove(id: number): Promise<void> {
     const task = await this.tasksRepository.findOne({ where: { id } });
 
@@ -35,26 +37,40 @@ export class TasksService {
   }
 
   async add(taskDto: TasksDto): Promise<TasksDto> {
-    return await this.tasksRepository.save(taskDto);
+    // Extract the 'users' field from the DTO
+    const { users, ...taskData } = taskDto;
+
+    // Create a new task entity based on the extracted data
+    const newTask = this.tasksRepository.create({
+      ...taskData,
+      users: users ? users.map((userId) => ({ id: userId })) : [], // Convert user IDs to Users entities
+    });
+
+    // Save the new task to the database
+    await this.tasksRepository.save(newTask);
+
+    // Return the DTO representation of the added task
+    return taskDto;
   }
 
   async updateTask(
     id: number,
     newTitle?: string,
     newDescription?: string,
-    newStatus?: string
+    newStatus?: string,
+    newUsers?: number[]
   ): Promise<Tasks> {
-    // Recherchez la tâche à mettre à jour
+    // Find the task to update
     const task = await this.tasksRepository.findOne({ where: { id } });
 
-    // Vérifiez si la tâche existe
+    // Check if the task exists
     if (!task) {
       throw new NotFoundException(
         `La tâche avec l'ID ${id} n'a pas été trouvée.`
       );
     }
 
-    // Mettez à jour les propriétés de la tâche avec les nouvelles valeurs si elles sont fournies
+    // Update task properties with new values if provided
     if (newTitle !== undefined) {
       task.title = newTitle;
     }
@@ -67,10 +83,27 @@ export class TasksService {
       task.status = newStatus;
     }
 
-    // Enregistrez les modifications dans la base de données
+    if (newUsers !== undefined) {
+      // Ensure that the provided user IDs exist before updating the task
+      const existingUsers = await this.tasksRepository.manager.find(Users, {
+        // Change here
+        where: { id: In(newUsers) }, // Adjust the where condition based on your Users entity
+      });
+
+      if (existingUsers.length !== newUsers.length) {
+        throw new NotFoundException(
+          `One or more user IDs provided do not exist.`
+        );
+      }
+
+      // Update the task's users field with the new array of user entities
+      task.users = existingUsers;
+    }
+
+    // Save the changes to the database
     await this.tasksRepository.save(task);
 
-    // Renvoyez la tâche mise à jour
+    // Return the updated task
     return task;
   }
 }
