@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,9 +17,8 @@ import {
   ApiProperty,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
 import { Public } from 'src/app.decorator';
-import { log } from 'console';
+import { AuthDto } from './dto/auth.dto';
 
 class SignInDto {
   @ApiProperty({ type: String, description: 'Adresse email' })
@@ -52,9 +50,47 @@ export class AuthController {
       signInDto.password
     );
 
-    // Retournez l'access_token dans la réponse
+    const refreshToken = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password
+    );
+
+    // Retournez l'access_token dans la réponse + refresh_token
     console.log('accessToken', accessToken.access_token);
-    return { access_token: accessToken.access_token };
+    console.log('refreshToken', refreshToken.refresh_token);
+    return {
+      access_token: accessToken.access_token,
+      refresh_token: refreshToken.refresh_token,
+    };
+  }
+
+  @Public()
+  @ApiOperation({
+    summary: 'Régénerer un jwt grace au refresh token',
+    requestBody: {
+      content: {
+        'application/json': {},
+      },
+    },
+  })
+  @ApiBody({ type: AuthDto })
+  @Post('refresh')
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    console.log('Received body:', Body); // Log le corps entier de la requête
+    console.log('Received refreshToken:', refreshToken); // Debug
+    return this.authService.refreshToken(refreshToken);
+  }
+
+  @ApiBearerAuth()
+  @Post('generate-api-key')
+  async generate(@Request() req) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      throw new BadRequestException('Token est requis');
+    }
+
+    return this.authService.generate(token);
   }
 
   // @UseGuards(AuthGuard)
