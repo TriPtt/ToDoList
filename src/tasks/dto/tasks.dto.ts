@@ -1,4 +1,4 @@
-import { IsDate, IsInt, IsString } from 'class-validator';
+import { IsArray, IsDate, IsInt, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class TasksDto {
@@ -25,4 +25,8 @@ export class TasksDto {
   @ApiProperty()
   @IsInt()
   userId: number;
+
+  @ApiProperty({ type: [Number] }) // Specify that the type is an array of numbers
+  @IsArray()
+  readonly users: number[];
 }
