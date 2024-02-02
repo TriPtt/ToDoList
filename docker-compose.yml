@@ -1,0 +1,40 @@
+services:
+  postgresdb:
+    image: postgres:16.1
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_USER=jjlonuuk
+      - POSTGRES_PASSWORD=JUvb-EB1qBOMEET_KxLnq48mtmO3REgY
+      - POSTGRES_DB=mel.db.elephantsql.com
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./src/metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana:10.3.1-ubuntu
+    ports:
+      - 3000:3000
+
+  app:
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      - postgresdb
+    restart: unless-stopped
+    ports:
+      - 4000:4000
+    environment:
+      - PORT=4000
+    # To enable dev mode: mount current project and watch (avoid to restart+build each time) :
+    # volumes:
+    #   - .:/app
+    # command: npm run start:dev
+
+volumes:
+  postgres-data:
