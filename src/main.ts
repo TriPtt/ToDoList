@@ -30,8 +30,6 @@ async function bootstrap() {
   });
 
   await app.listen(4000);
-  console.log(process.env.API_PORT);
-  console.log(process.env.DATABASE_USER);
 }
 
 bootstrap();
