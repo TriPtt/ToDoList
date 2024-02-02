@@ -1,46 +1,54 @@
+# ToDoList WebService avec NestJS
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Logo Nest" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Aperçu
 
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Ce projet est le fruit d'une collaboration visant à créer un service Web ToDoList robuste en utilisant NestJS. Il intègre des fonctionnalités telles que Swagger pour la documentation de l'API, Docker pour la conteneurisation, et PostgreSQL comme base de données.
 
-## Description
+## Fonctionnalités clés
 
-Projet de groupe ToDoList webService
+- **Framework NestJS** : Utilisation du puissant framework NestJS pour la construction d'applications côté serveur évolutives et faciles à entretenir.
+- **Intégration Swagger** : Documentation et exploration de l'API facilitées grâce à Swagger.
+- **Dockerisé** : Conteneurs Docker pour un déploiement facile et une reproductibilité accrue.
+- **Base de données PostgreSQL** : Exploitation de PostgreSQL pour une solution de stockage de données fiable et efficace.
 
-## Installation
+## Objectif
+
+Le service Web ToDoList offre une base solide pour la gestion et l'organisation des tâches. Il propose une expérience d'API transparente pour les développeurs et sert de fondation pour la création d'applications ToDoList.
+
+## Prise en main
+
+### Installation
 
 ```bash
 $ npm install
 ```
 
-## Running the app
+### Lancement de l'application
 
 ```bash
-# development
+# Mode développement
 $ npm run start
 
-# watch mode
+# Mode surveillance
 $ npm run start:dev
 
-# production mode
+# Mode production
 $ npm run start:prod
 ```
 
-## Test
+### Tests
 
 ```bash
-# unit tests
+# Tests unitaires
 $ npm run test
 
-# e2e tests
+# Tests end-to-end
 $ npm run test:e2e
 
-# test coverage
+# Couverture des tests
 $ npm run test:cov
 ```
-
